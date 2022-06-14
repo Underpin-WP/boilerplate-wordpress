@@ -1,0 +1,53 @@
+<?php
+/**
+ * PLUGIN NAME REPLACE ME
+ *
+ * Plugin Name:       PLUGIN NAME REPLACE ME
+ * Plugin URI:        PLUGIN URL REPLACE ME
+ * Description:       PLUGIN DESCRIPTION REPLACE ME
+ * Version:           1.0.0
+ * Requires at least: 5.2
+ * Requires PHP:      7.2
+ * Author:            AUTHOR NAME REPLACE ME
+ * Author URI:        AUTHOR URL REPLACE ME
+ * Text Domain:       plugin-name-replace-me
+ */
+
+use DI\DependencyException;
+use DI\NotFoundException;
+use Plugin_Name_Replace_Me\Base;
+use Underpin\Loaders\Logger;
+
+try {
+	// Load the autoloader.
+	require_once( './vendor/autoload.php' );
+
+	// Used in the config.php file.
+	define( "PLUGIN_NAME_REPLACE_ME_ROOT", plugin_dir_path( __FILE__ ) );
+
+	// Initialize the plugin.
+	Base\Base::instance();
+} catch ( Exception $exception ) {
+	// Log anything that goes wrong to the logger.
+	Logger::log_exception( 'emergency', $exception );
+
+	// Also put an admin notice in the admin screen.
+	add_action( 'admin_notices', function () {
+		echo '<div class="error"><p>PLUGIN NAME REPLACE ME could not be set up.</p></div>';
+	} );
+}
+
+/**
+ * Fires up the plugin.
+ *
+ * @return Base\Provider|null
+ */
+function plugin_name_replace_me(): ?Base\Provider {
+	try {
+		return Base\Base::instance()->get_provider();
+	} catch ( DependencyException|NotFoundException $e ) {
+		// Log if something went wrong.
+		Logger::log_exception( 'emergency', $e );
+		return null;
+	}
+}
