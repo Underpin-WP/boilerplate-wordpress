@@ -13,7 +13,8 @@ use Underpin\Loaders\Logger;
  * This class is accessed using plugin_name_replace_me() and the methods here are intended to be used to provide the
  * various functionalities in this plugin.
  *
- * This provider should provide instances of plugin constructs, using loaders added in the plugin builder.
+ * This provider should provide instances from the builder, translating potentially long chains into sane, readable
+ * values.
  */
 class Provider implements Interfaces\Provider {
 
