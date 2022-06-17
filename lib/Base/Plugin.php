@@ -2,6 +2,7 @@
 
 namespace Plugin_Name_Replace_Me\Base;
 
+use Exception;
 use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Exceptions\Unmet_Requirements;
 use Underpin\Helpers\Processors\Array_Processor;
@@ -88,30 +89,44 @@ class Plugin implements Integration_Provider {
 		}
 	}
 
+	protected function get_unsupported_requirements( array $checks ): array {
+		return ( new Array_Processor( $checks ) )
+			->filter( fn ( $item ) => ! isset( $item['supported'] ) || false === $item['supported'] )
+			->each( fn ( $item ) => $item['minimum'] )
+			->to_array();
+	}
+
+
 	public function minimum_requirements_met(): bool {
 		try {
-			$unsupported = ( new Array_Processor( [
-				'supports_php_version' => Base::instance()->supports_php_version(),
-				'supports_wp_version'  => Base::instance()->supports_wp_version(),
-			] ) )->filter( fn ( $item ) => false === $item )->to_array();
+			$unsupported = $this->get_unsupported_requirements( [
+				'PHP'       => [ 'minimum' => Base::instance()->get_config( 'plugin.minimum_php_version' ), 'supported' => Base::instance()->supports_php_version() ],
+				'WordPress' => [ 'minimum' => Base::instance()->get_config( 'plugin.minimum_wp_version' ), 'supported' => Base::instance()->supports_wp_version() ],
+			] );
 
 			if ( ! empty( $unsupported ) ) {
 				throw new Unmet_Requirements( $unsupported );
 			}
 		} catch ( Unmet_Requirements $e ) {
-			add_action( 'admin_notices', function () {
-				echo '<div class="error">
-<p>PLUGIN NAME REPLACE ME could not be set up because it does not support the minimum version. This plugin requires at least PHP version ' . Base::instance()->get_config( 'plugin.minimum_php_version' ) . ' and at least WordPress version ' . Base::instance()->get_config( 'plugin.minimum_wp_version' ) . '</p>
-</div>';
+			add_action( 'admin_notices', function () use ( $e ) {
+				$outdated = (string) ( new Array_Processor( $e->unmet_expected ) )
+					->to_indexed()
+					->map( fn ( $item ) => $item['key'] . ': ' . $item['minimum'] )
+					->set_separator( ', ' );
+
+				echo "<div class='error'><p>PLUGIN NAME REPLACE ME can't run because this site doesn't meet the minimum requirements. Unmet Requirements: $outdated</p></div>";
 			} );
 
-		} catch ( \Exception $e ) {
+			return false;
+		} catch ( Exception $e ) {
 			add_action( 'admin_notices', function () {
 				echo '<div class="error"><p>PLUGIN NAME REPLACE ME could not be set up.</p></div>';
 			} );
 
 			return false;
 		}
+
+		return true;
 	}
 
 }
