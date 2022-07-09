@@ -28,9 +28,11 @@ class Base implements Interfaces\Base, Singleton {
 	 */
 	public function __construct() {
 		try {
-			$this->container = ( new ContainerBuilder )->addDefinitions( PLUGIN_NAME_REPLACE_ME_ROOT . '/config.php' )->build();
+			$this->container = ( new ContainerBuilder )
+				->addDefinitions( plugin_dir_path( PLUGIN_NAME_REPLACE_ME_FILE ) . '/config.php' )
+				->build();
 		} catch ( \Exception $e ) {
-			throw new Exception( message: $e->getMessage(), code: $e->getCode(), previous: $e );
+			throw new Exception( message: $e->getMessage(), code: $e->getCode(), type: 'alert', previous: $e );
 		}
 	}
 
@@ -64,7 +66,7 @@ class Base implements Interfaces\Base, Singleton {
 		try {
 			return $this->supports_php_version() && $this->supports_wp_version();
 		} catch ( \Exception $e ) {
-			Logger::log_exception( 'error', $e );
+			Logger::error( $e );
 			add_action( 'admin_notices', function () {
 				echo '<div class="error">
 <p>PLUGIN NAME REPLACE ME could not be set up because it does not support the minimum version. This plugin requires at least PHP version ' . $this->get_config( 'plugin.minimum_php_version' ) . ' and at least WordPress version ' . $this->get_config( 'plugin.minimum_wp_version' ) . '</p>
@@ -99,7 +101,7 @@ class Base implements Interfaces\Base, Singleton {
 			try {
 				$this->builder = $this->get_container()->get( Provider::class );
 			} catch ( DependencyException|NotFoundException $e ) {
-				Logger::log_exception( 'emergency', $e );
+				Logger::alert( $e );
 				throw $e;
 			}
 		}
@@ -116,7 +118,7 @@ class Base implements Interfaces\Base, Singleton {
 			try {
 				$this->builder = $this->get_container()->get( Plugin::class );
 			} catch ( DependencyException|NotFoundException $e ) {
-				Logger::log_exception( 'emergency', $e );
+				Logger::alert( $e );
 				throw $e;
 			}
 		}

@@ -13,8 +13,7 @@ use Underpin\Loaders\Logger;
  * This class is accessed using plugin_name_replace_me() and the methods here are intended to be used to provide the
  * various functionalities in this plugin.
  *
- * This provider should provide instances from the builder, translating potentially long chains into sane, readable
- * values.
+ * This provider should provide instances of plugin constructs, using loaders added in the plugin builder.
  */
 class Provider implements Interfaces\Provider {
 
@@ -27,7 +26,7 @@ class Provider implements Interfaces\Provider {
 		try {
 			return Base::instance()->get_builder();
 		} catch ( DependencyException|NotFoundException $e ) {
-			Logger::log_exception( 'emergency', $e );
+			Logger::emergency( $e );
 			return null;
 		}
 	}
