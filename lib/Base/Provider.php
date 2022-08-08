@@ -5,6 +5,7 @@ namespace Plugin_Name_Replace_Me\Base;
 
 use DI\DependencyException;
 use DI\NotFoundException;
+use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Interfaces;
 use Underpin\Loaders\Logger;
 

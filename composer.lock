@@ -436,12 +436,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Underpin-WP/underpin.git",
-                "reference": "48e40467335db854ba0cc1442c7a021ab73d482b"
+                "reference": "fa70100ac28a2d0e15a0a8a42cca2c79d9042b79"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Underpin-WP/underpin/zipball/48e40467335db854ba0cc1442c7a021ab73d482b",
-                "reference": "48e40467335db854ba0cc1442c7a021ab73d482b",
+                "url": "https://api.github.com/repos/Underpin-WP/underpin/zipball/fa70100ac28a2d0e15a0a8a42cca2c79d9042b79",
+                "reference": "fa70100ac28a2d0e15a0a8a42cca2c79d9042b79",
                 "shasum": ""
             },
             "require": {
@@ -473,7 +473,7 @@
                 "issues": "https://github.com/Underpin-WP/underpin/issues",
                 "source": "https://github.com/Underpin-WP/underpin/tree/release/3.0.0"
             },
-            "time": "2022-07-09T14:47:09+00:00"
+            "time": "2022-08-08T15:56:44+00:00"
         },
         {
             "name": "underpin/wordpress-integration",

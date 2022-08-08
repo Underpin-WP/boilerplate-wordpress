@@ -9,6 +9,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Underpin\Exceptions\Exception;
 use Underpin\Exceptions\Item_Not_Found;
+use Underpin\Exceptions\Unmet_Requirements;
 use Underpin\Helpers\Array_Helper;
 use Underpin\Helpers\String_Helper;
 use Underpin\Interfaces\Singleton;
@@ -29,10 +30,16 @@ class Base implements Interfaces\Base, Singleton {
 	public function __construct() {
 		try {
 			$this->container = ( new ContainerBuilder )
-				->addDefinitions( String_Helper::before(__DIR__, '/lib/Base') . '/config.php' )
+				->addDefinitions( String_Helper::before( __DIR__, '/lib/Base' ) . '/config.php' )
 				->build();
 		} catch ( \Exception $e ) {
 			throw new Exception( message: $e->getMessage(), code: $e->getCode(), type: 'alert', previous: $e );
+		}
+
+		try {
+			Logger::set_volume( $this->get_config( 'logger.volume' ) );
+		} catch ( Item_Not_Found ) {
+			// Ignore the attempt to set the volume if the config is not set.
 		}
 	}
 
@@ -42,43 +49,20 @@ class Base implements Interfaces\Base, Singleton {
 	 * @since 1.0.0
 	 *
 	 * @return bool True if the minimum requirements are met, false otherwise.
-	 * @throws Item_Not_Found
 	 */
-	public function supports_php_version(): bool {
-		return version_compare( phpversion(), $this->get_config( 'plugin.minimum_php_version' ), '>=' );
-	}
-
-	/**
-	 * Checks if the WP version meets the minimum requirements.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return bool True if the minimum requirements are met, false otherwise.
-	 * @throws Item_Not_Found
-	 */
-	public function supports_app_version(): bool {
-		global $wp_version;
-
-		return version_compare( $wp_version, $this->get_config( 'plugin.minimum_app_version' ), '>=' );
-	}
-
-	/**
-	 * Returns true if the minimum requirements are met, otherwise returns false.
-	 *
-	 * @return bool
-	 */
-	public function minimum_requirements_met(): bool {
+	public function is_supported(): bool {
 		try {
-			return $this->supports_php_version() && $this->supports_app_version();
-		} catch ( \Exception $e ) {
-			Logger::error( $e );
-
+			$version = $this->get_config( 'plugin.minimum_php_version' );
+		} catch ( Item_Not_Found $e ) {
 			return false;
 		}
+
+		return version_compare( phpversion(), $version, '>=' );
 	}
 
 	/**
 	 * Gets the dependency injection container.
+	 *
 	 * @see https://php-di.org/
 	 *
 	 * @return Container
@@ -100,12 +84,14 @@ class Base implements Interfaces\Base, Singleton {
 
 	/**
 	 * @throws DependencyException
-	 * @throws NotFoundException
+	 * @throws NotFoundException|Unmet_Requirements
 	 */
 	public function get_provider(): Provider {
 		if ( ! isset( $this->provider ) ) {
 			try {
-				$this->provider = $this->get_container()->get( Provider::class );
+				if ( $this->get_builder()->minimum_requirements_met() ) {
+					$this->provider = $this->get_container()->get( Provider::class );
+				}
 			} catch ( DependencyException|NotFoundException $e ) {
 				Logger::alert( $e );
 				throw $e;

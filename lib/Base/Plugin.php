@@ -2,7 +2,6 @@
 
 namespace Plugin_Name_Replace_Me\Base;
 
-use Exception;
 use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Exceptions\Unmet_Requirements;
 use Underpin\Helpers\Processors\Array_Processor;
@@ -85,6 +84,7 @@ class Plugin implements Integration_Provider {
 			return Base::instance()->get_config( 'plugin.url' );
 		} catch ( Item_Not_Found $e ) {
 			Logger::error( $e );
+
 			return $e;
 		}
 	}
@@ -96,34 +96,47 @@ class Plugin implements Integration_Provider {
 			->to_array();
 	}
 
+	/**
+	 * Checks if the WP version meets the minimum requirements.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return bool True if the minimum requirements are met, false otherwise.
+	 */
+	protected function is_supported(): bool {
+		global $wp_version;
+
+		try {
+			$required_version = Base::instance()->get_config( 'plugin.minimum_wp_version' );
+		} catch ( Item_Not_Found $e ) {
+			return false;
+		}
+
+		return version_compare( $wp_version, $required_version, '>=' );
+	}
 
 	public function minimum_requirements_met(): bool {
+
 		try {
-			$unsupported = $this->get_unsupported_requirements( [
-				'PHP'       => [ 'minimum' => Base::instance()->get_config( 'plugin.minimum_php_version' ), 'supported' => Base::instance()->supports_php_version() ],
-				'WordPress' => [ 'minimum' => Base::instance()->get_config( 'plugin.minimum_wp_version' ), 'supported' => Base::instance()->supports_wp_version() ],
-			] );
-
-			if ( ! empty( $unsupported ) ) {
-				throw new Unmet_Requirements( $unsupported );
-			}
-		} catch ( Unmet_Requirements $e ) {
-			add_action( 'admin_notices', function () use ( $e ) {
-				$outdated = (string) ( new Array_Processor( $e->unmet_expected ) )
-					->to_indexed()
-					->map( fn ( $item ) => $item['key'] . ': ' . $item['minimum'] )
-					->set_separator( ', ' );
-
-				echo "<div class='error'><p>PLUGIN NAME REPLACE ME can't run because this site doesn't meet the minimum requirements. Unmet Requirements: $outdated</p></div>";
-			} );
-
+			$php_version = Base::instance()->get_config( 'plugin.minimum_php_version' );
+			$wp_version  = Base::instance()->get_config( 'plugin.minimum_wp_version' );
+		} catch ( Item_Not_Found ) {
 			return false;
-		} catch ( Exception $e ) {
-			add_action( 'admin_notices', function () {
-				echo '<div class="error"><p>PLUGIN NAME REPLACE ME could not be set up.</p></div>';
-			} );
+		}
 
-			return false;
+		$unsupported = $this->get_unsupported_requirements( [
+			'PHP'       => [
+				'minimum'   => $php_version,
+				'supported' => Base::instance()->is_supported(),
+			],
+			'WordPress' => [
+				'minimum'   => $wp_version,
+				'supported' => $this->is_supported(),
+			],
+		] );
+
+		if ( ! empty( $unsupported ) ) {
+			throw new Unmet_Requirements( $unsupported );
 		}
 
 		return true;
