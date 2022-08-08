@@ -20,7 +20,7 @@ use Underpin\Loaders\Logger;
 
 try {
 	// Load the autoloader.
-	require_once( './vendor/autoload.php' );
+	require_once( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' );
 
 	// Used in the config.php file.
 	define( "PLUGIN_NAME_REPLACE_ME_FILE", __FILE__ );

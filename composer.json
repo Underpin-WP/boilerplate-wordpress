@@ -2,12 +2,13 @@
   "name": "vendor_name/plugin-name-replace-me",
   "description": "PLUGIN DESCRIPTION REPLACE ME",
   "type": "wordpress-plugin",
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "license": "proprietary",
   "authors": [
     {
       "name": "AUTHOR NAME REPLACE ME",
-      "email": "AUTHOR EMAIL REPLACE ME"
+      "email": "alex@standiford.us"
     }
   ],
   "autoload": {
@@ -15,9 +16,13 @@
       "Plugin_Name_Replace_Me\\": "lib/"
     }
   },
+  "repositories": [{
+    "type": "vcs",
+    "url": "https://github.com/Underpin-WP/wordpress-integration"
+  }],
   "require": {
     "php-di/php-di": "^6.4",
-    "underpin-wp/underpin": "dev-release/3.0.0",
-    "underpin-wp/wordpress-integration": "dev-master"
+    "underpin/underpin": "dev-release/3.0.0",
+    "underpin/wordpress-integration": "dev-main"
   }
 }

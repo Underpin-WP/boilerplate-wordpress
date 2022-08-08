@@ -1,5 +1,11 @@
 <?php
-$plugin_data = get_plugin_data( plugin_dir_path( PLUGIN_NAME_REPLACE_ME_FILE ), false, false );
+$plugin_data = get_file_data( plugin_dir_path( PLUGIN_NAME_REPLACE_ME_FILE ) . 'index.php', [
+	'Name',
+	'Description',
+	'Version',
+	'RequiresPHP',
+	'RequiresWP',
+], 'plugin' );
 
 return [
 	'configuration' => [
