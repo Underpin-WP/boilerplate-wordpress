@@ -51,3 +51,5 @@ function plugin_name_replace_me(): ?Base\Provider {
 		return null;
 	}
 }
+
+plugin_name_replace_me();

@@ -10,7 +10,6 @@ use DI\NotFoundException;
 use Underpin\Exceptions\Exception;
 use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Helpers\Array_Helper;
-use Underpin\Interfaces\Provider;
 use Underpin\Interfaces\Singleton;
 use Underpin\Loaders\Logger;
 use Underpin\WordPress\Interfaces;
@@ -99,7 +98,7 @@ class Base implements Interfaces\Base, Singleton {
 	public function get_provider(): Provider {
 		if ( ! isset( $this->provider ) ) {
 			try {
-				$this->builder = $this->get_container()->get( Provider::class );
+				$this->provider = $this->get_container()->get( Provider::class );
 			} catch ( DependencyException|NotFoundException $e ) {
 				Logger::alert( $e );
 				throw $e;
