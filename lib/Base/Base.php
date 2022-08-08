@@ -10,6 +10,7 @@ use DI\NotFoundException;
 use Underpin\Exceptions\Exception;
 use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Helpers\Array_Helper;
+use Underpin\Helpers\String_Helper;
 use Underpin\Interfaces\Singleton;
 use Underpin\Loaders\Logger;
 use Underpin\WordPress\Interfaces;
@@ -28,7 +29,7 @@ class Base implements Interfaces\Base, Singleton {
 	public function __construct() {
 		try {
 			$this->container = ( new ContainerBuilder )
-				->addDefinitions( plugin_dir_path( PLUGIN_NAME_REPLACE_ME_FILE ) . '/config.php' )
+				->addDefinitions( String_Helper::before(__DIR__, '/lib/Base') . '/config.php' )
 				->build();
 		} catch ( \Exception $e ) {
 			throw new Exception( message: $e->getMessage(), code: $e->getCode(), type: 'alert', previous: $e );
@@ -55,27 +56,33 @@ class Base implements Interfaces\Base, Singleton {
 	 * @return bool True if the minimum requirements are met, false otherwise.
 	 * @throws Item_Not_Found
 	 */
-	public function supports_wp_version(): bool {
+	public function supports_app_version(): bool {
 		global $wp_version;
 
-		return version_compare( $wp_version, $this->get_config( 'plugin.minimum_wp_version' ), '>=' );
+		return version_compare( $wp_version, $this->get_config( 'plugin.minimum_app_version' ), '>=' );
 	}
 
+	/**
+	 * Returns true if the minimum requirements are met, otherwise returns false.
+	 *
+	 * @return bool
+	 */
 	public function minimum_requirements_met(): bool {
 		try {
-			return $this->supports_php_version() && $this->supports_wp_version();
+			return $this->supports_php_version() && $this->supports_app_version();
 		} catch ( \Exception $e ) {
 			Logger::error( $e );
-			add_action( 'admin_notices', function () {
-				echo '<div class="error">
-<p>PLUGIN NAME REPLACE ME could not be set up because it does not support the minimum version. This plugin requires at least PHP version ' . $this->get_config( 'plugin.minimum_php_version' ) . ' and at least WordPress version ' . $this->get_config( 'plugin.minimum_wp_version' ) . '</p>
-</div>';
-			} );
 
 			return false;
 		}
 	}
 
+	/**
+	 * Gets the dependency injection container.
+	 * @see https://php-di.org/
+	 *
+	 * @return Container
+	 */
 	public function get_container(): Container {
 		return $this->container;
 	}
@@ -125,6 +132,11 @@ class Base implements Interfaces\Base, Singleton {
 		return $this->builder;
 	}
 
+	/**
+	 * Gets the instance of the app base.
+	 *
+	 * @return static
+	 */
 	public static function instance(): static {
 		if ( ! isset( self::$instance ) ) {
 			self::$instance = new self;

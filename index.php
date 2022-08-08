@@ -26,7 +26,13 @@ try {
 	define( "PLUGIN_NAME_REPLACE_ME_FILE", __FILE__ );
 
 	// Initialize the plugin.
-	Base\Base::instance();
+	if ( ( Base\Base::instance() )->minimum_requirements_met() ) {
+		add_action( 'admin_notices', function () {
+			echo '<div class="error">
+<p>PLUGIN NAME REPLACE ME could not be set up because it does not support the minimum version. This plugin requires at least PHP version ' . Base\Base::instance()->get_config( 'plugin.minimum_php_version' ) . ' and at least WordPress version ' . Base\Base::instance()->get_config( 'plugin.minimum_wp_version' ) . '</p>
+</div>';
+		} );
+	};
 } catch ( Exception $exception ) {
 	// Log anything that goes wrong to the logger.
 	Logger::alert( $exception );
@@ -48,6 +54,9 @@ function plugin_name_replace_me(): ?Base\Provider {
 	} catch ( DependencyException|NotFoundException $e ) {
 		// Log if something went wrong.
 		Logger::alert( $e );
+
 		return null;
 	}
 }
+
+plugin_name_replace_me();
