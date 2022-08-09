@@ -17,6 +17,15 @@ use Underpin\Loaders\Logger;
 use Underpin\WordPress\Interfaces;
 use Underpin\WordPress\Interfaces\Integration_Provider;
 
+/**
+ * Base Class.
+ *
+ * This class is the singleton instance that fires up the entire plugin. Things like setting up the dependency injection
+ * container happen here.
+ *
+ * This class should not directly call any methods to WordPress, or anything that is outside this plugin's code. All of
+ * that setup should happen directly in the index.php file.
+ */
 class Base implements Interfaces\Base, Singleton {
 
 	protected static self          $instance;
@@ -105,10 +114,10 @@ class Base implements Interfaces\Base, Singleton {
 	 * @throws DependencyException
 	 * @throws NotFoundException
 	 */
-	public function get_builder(): Plugin {
+	public function get_builder(): Integration {
 		if ( ! isset( $this->builder ) ) {
 			try {
-				$this->builder = $this->get_container()->get( Plugin::class );
+				$this->builder = $this->get_container()->get( Integration::class );
 			} catch ( DependencyException|NotFoundException $e ) {
 				Logger::alert( $e );
 				throw $e;

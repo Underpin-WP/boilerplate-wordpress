@@ -8,7 +8,12 @@ use Underpin\Helpers\Processors\Array_Processor;
 use Underpin\Loaders\Logger;
 use Underpin\WordPress\Interfaces\Integration_Provider;
 
-class Plugin implements Integration_Provider {
+/**
+ * Integration Class.
+ *
+ * This plugin actually integrates with WordPress, using Underpin loaders in the constructor.
+ */
+class Integration implements Integration_Provider {
 
 	public function __construct(
 		/**
@@ -20,6 +25,8 @@ class Plugin implements Integration_Provider {
 	}
 
 	/**
+	 * Gets the plugin file.
+	 *
 	 * @throws Item_Not_Found
 	 */
 	public function get_file(): string {
@@ -32,63 +39,59 @@ class Plugin implements Integration_Provider {
 	}
 
 	/**
+	 * Gets the plugin directory.
+	 *
 	 * @throws Item_Not_Found
 	 */
 	public function get_dir(): string {
-		try {
-			return Base::instance()->get_config( 'plugin.dir' );
-		} catch ( Item_Not_Found $e ) {
-			Logger::error( $e );
-			throw $e;
-		}
+		return Base::instance()->get_config( 'plugin.dir' );
 	}
 
 	/**
+	 * Gets the plugin name.
+	 *
 	 * @throws Item_Not_Found
 	 */
 	public function get_name(): string {
-		try {
-			return Base::instance()->get_config( 'plugin.name' );
-		} catch ( Item_Not_Found $e ) {
-			Logger::error( $e );
-			throw $e;
-		}
+		return Base::instance()->get_config( 'plugin.name' );
 	}
 
 	/**
+	 * Gets the plugin description
+	 *
 	 * @throws Item_Not_Found
 	 */
 	public function get_description(): string {
-		try {
-			return Base::instance()->get_config( 'plugin.description' );
-		} catch ( Item_Not_Found $e ) {
-			Logger::error( $e );
-			throw $e;
-		}
+		return Base::instance()->get_config( 'plugin.description' );
 	}
 
 	/**
+	 * Gets the plugin version.
+	 *
 	 * @throws Item_Not_Found
 	 */
 	public function get_version(): string {
-		try {
-			return Base::instance()->get_config( 'plugin.version' );
-		} catch ( Item_Not_Found $e ) {
-			Logger::error( $e );
-			throw $e;
-		}
+		return Base::instance()->get_config( 'plugin.version' );
 	}
 
+	/**
+	 * Gets the plugin URL.
+	 *
+	 * @return string
+	 * @throws Item_Not_Found
+	 */
 	public function get_url(): string {
-		try {
-			return Base::instance()->get_config( 'plugin.url' );
-		} catch ( Item_Not_Found $e ) {
-			Logger::error( $e );
-
-			return $e;
-		}
+		return Base::instance()->get_config( 'plugin.url' );
 	}
 
+	/**
+	 * Retrieves the unsupported requirements for this plugin. Checks against an array of requirements.
+	 *
+	 * @param array $checks An array keyed by the requirement name. Each item is an array containing
+	 *                      "minimum" and "supported" values.
+	 *
+	 * @return array The list of unsupported items.
+	 */
 	protected function get_unsupported_requirements( array $checks ): array {
 		return ( new Array_Processor( $checks ) )
 			->filter( fn ( $item ) => ! isset( $item['supported'] ) || false === $item['supported'] )
@@ -115,6 +118,12 @@ class Plugin implements Integration_Provider {
 		return version_compare( $wp_version, $required_version, '>=' );
 	}
 
+	/**
+	 * Returns true if the minimum plugin requirements are met, otherwise throws an Unmet_Requirements exception.
+	 *
+	 * @return bool
+	 * @throws Unmet_Requirements
+	 */
 	public function minimum_requirements_met(): bool {
 
 		try {
