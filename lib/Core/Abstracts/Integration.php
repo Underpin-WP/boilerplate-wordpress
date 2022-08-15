@@ -4,7 +4,6 @@ namespace Plugin_Name_Replace_Me\Core\Abstracts;
 
 
 use Plugin_Name_Replace_Me\Core\Base\Base;
-use Plugin_Name_Replace_Me\Core\Models\Beer\Provider;
 use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Exceptions\Unmet_Requirements;
 use Underpin\Helpers\Processors\Array_Processor;
