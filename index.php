@@ -5,11 +5,12 @@
  */
 
 use Plugin_Name_Replace_Me\Core\Base\Base;
+use Underpin\Helpers\String_Helper;
 
 // Load the autoloader.
-require_once( plugin_dir_path( __FILE__ ) . 'vendor/autoload.php' );
-require_once( plugin_dir_path( __FILE__ ) . 'lib/Core/index.php' );
+require_once( __DIR__ . '/vendor/autoload.php' );
+require_once( __DIR__ . '/lib/Core/index.php' );
 
 Base::instance()
-    ->set_config( require plugin_dir_path( __FILE__ ) . 'config.php' )
+    ->set_config( require __DIR__ . '/config.php' )
     ->init();
