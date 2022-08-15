@@ -436,12 +436,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Underpin-WP/underpin.git",
-                "reference": "fa70100ac28a2d0e15a0a8a42cca2c79d9042b79"
+                "reference": "7d812e5806bedcea4c44ba0babc08d4acb1bc0d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Underpin-WP/underpin/zipball/fa70100ac28a2d0e15a0a8a42cca2c79d9042b79",
-                "reference": "fa70100ac28a2d0e15a0a8a42cca2c79d9042b79",
+                "url": "https://api.github.com/repos/Underpin-WP/underpin/zipball/7d812e5806bedcea4c44ba0babc08d4acb1bc0d7",
+                "reference": "7d812e5806bedcea4c44ba0babc08d4acb1bc0d7",
                 "shasum": ""
             },
             "require": {
@@ -473,7 +473,7 @@
                 "issues": "https://github.com/Underpin-WP/underpin/issues",
                 "source": "https://github.com/Underpin-WP/underpin/tree/release/3.0.0"
             },
-            "time": "2022-08-08T15:56:44+00:00"
+            "time": "2022-08-15T11:28:59+00:00"
         },
         {
             "name": "underpin/wordpress-integration",
@@ -481,12 +481,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Underpin-WP/wordpress-integration.git",
-                "reference": "4de98ce0b640abf9ea70c8031db1d2c939a7f095"
+                "reference": "324f906c4428d4d204b927e3c0c4de7cc7817582"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Underpin-WP/wordpress-integration/zipball/4de98ce0b640abf9ea70c8031db1d2c939a7f095",
-                "reference": "4de98ce0b640abf9ea70c8031db1d2c939a7f095",
+                "url": "https://api.github.com/repos/Underpin-WP/wordpress-integration/zipball/324f906c4428d4d204b927e3c0c4de7cc7817582",
+                "reference": "324f906c4428d4d204b927e3c0c4de7cc7817582",
                 "shasum": ""
             },
             "require": {
@@ -523,7 +523,7 @@
                 "source": "https://github.com/Underpin-WP/wordpress-integration/tree/main",
                 "issues": "https://github.com/Underpin-WP/wordpress-integration/issues"
             },
-            "time": "2022-08-08T09:26:59+00:00"
+            "time": "2022-08-14T22:00:21+00:00"
         }
     ],
     "packages-dev": [],

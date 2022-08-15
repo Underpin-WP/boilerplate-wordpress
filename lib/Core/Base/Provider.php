@@ -1,10 +1,12 @@
 <?php
 
-namespace Plugin_Name_Replace_Me\Base;
+namespace Plugin_Name_Replace_Me\Core\Base;
 
 
 use DI\DependencyException;
 use DI\NotFoundException;
+use Plugin_Name_Replace_Me\Integrations\WordPress\Integration;
+use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Interfaces;
 use Underpin\Loaders\Logger;
 
@@ -28,8 +30,8 @@ class Provider implements Interfaces\Provider {
 	 */
 	private function builder(): ?Integration {
 		try {
-			return Base::instance()->get_builder();
-		} catch ( DependencyException|NotFoundException $e ) {
+			return Base::instance()->get_integration();
+		} catch ( DependencyException|NotFoundException|Item_Not_Found $e ) {
 			Logger::emergency( $e );
 
 			return null;
