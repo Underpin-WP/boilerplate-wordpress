@@ -5,7 +5,6 @@
  */
 
 use Plugin_Name_Replace_Me\Core\Base\Base;
-use Underpin\Helpers\String_Helper;
 
 // Load the autoloader.
 require_once( __DIR__ . '/vendor/autoload.php' );
