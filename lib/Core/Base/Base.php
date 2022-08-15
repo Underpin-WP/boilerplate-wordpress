@@ -7,6 +7,7 @@ use DI\Container;
 use DI\ContainerBuilder;
 use DI\DependencyException;
 use DI\NotFoundException;
+use Plugin_Name_Replace_Me\Core\Abstracts\Integration;
 use Plugin_Name_Replace_Me\Core\Enums\Base_Events;
 use Plugin_Name_Replace_Me\Core\Providers\Unmet_Requirements_Provider;
 use Underpin\Exceptions\Exception;
@@ -18,7 +19,6 @@ use Underpin\Exceptions\Unmet_Requirements;
 use Underpin\Helpers\Array_Helper;
 use Underpin\Helpers\String_Helper;
 use Underpin\Interfaces;
-use Underpin\Interfaces\Integration_Provider;
 use Underpin\Interfaces\Observer;
 use Underpin\Interfaces\Singleton;
 use Underpin\Loaders\Logger;
@@ -39,7 +39,7 @@ class Base implements Interfaces\Base, Singleton, Interfaces\Can_Broadcast {
 	use With_Broadcaster;
 
 	protected static self          $instance;
-	protected Integration_Provider $builder;
+	protected Integration          $integration;
 	protected Provider             $provider;
 	private Container              $container;
 	private bool                   $initialized = false;
@@ -115,13 +115,13 @@ class Base implements Interfaces\Base, Singleton, Interfaces\Can_Broadcast {
 	 * @throws NotFoundException
 	 * @throws Item_Not_Found
 	 */
-	public function get_integration(): Integration_Provider {
-		if ( ! isset( $this->builder ) ) {
+	public function get_integration(): Integration {
+		if ( ! isset( $this->integration ) ) {
 			try {
-				$this->builder = $this->get_container()->get( $this->get_config( 'integration.instance' ) );
+				$this->integration = $this->get_container()->get( $this->get_config( 'integration.instance' ) );
 
-				if ( $this->builder instanceof Interfaces\Feature_Extension ) {
-					$this->builder->do_actions();
+				if ( $this->integration instanceof Interfaces\Feature_Extension ) {
+					$this->integration->do_actions();
 				}
 			} catch ( DependencyException|NotFoundException|Item_Not_Found $e ) {
 				Logger::alert( $e );
@@ -129,7 +129,7 @@ class Base implements Interfaces\Base, Singleton, Interfaces\Can_Broadcast {
 			}
 		}
 
-		return $this->builder;
+		return $this->integration;
 	}
 
 	/**
