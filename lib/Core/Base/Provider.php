@@ -5,7 +5,7 @@ namespace Plugin_Name_Replace_Me\Core\Base;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use Plugin_Name_Replace_Me\Integrations\WordPress\Integration;
+use Plugin_Name_Replace_Me\Core\Abstracts\Integration;
 use Underpin\Exceptions\Item_Not_Found;
 use Underpin\Interfaces;
 use Underpin\Loaders\Logger;
